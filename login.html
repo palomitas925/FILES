@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Interactivo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f2fcfe;
+    }
+
+    .container {
+      display: flex;
+      width: 800px;
+      height: 450px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .image-side {
+      flex: 1;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .image-side img.logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .login-box {
+      flex: 1;
+      background-color: white;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-box h2 {
+      color: #1c92d2;
+      margin-bottom: 1rem;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #1c92d2;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1277b0;
+    }
+
+    .mensaje {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="image-side">
+      <img src="LOGO-SLIMPOP.png" class="logo" alt="Logo SlimPop">
+    </div>
+    <div class="login-box">
+      <h2>🔐 Login</h2>
+      <input type="text" id="usuario" placeholder="Usuario">
+      <input type="password" id="clave" placeholder="Contraseña">
+      <select id="rol">
+        <option value="operador">👷 Operador</option>
+        <option value="admin">🛡️ Administrador</option>
+      </select>
+      <button onclick="iniciarSesion()">Entrar</button>
+      <div class="mensaje" id="mensaje"></div>
+    </div>
+  </div>
+
+  <script>
+    function iniciarSesion() {
+      const usuario = document.getElementById('usuario').value;
+      const clave = document.getElementById('clave').value;
+      const rol = document.getElementById('rol').value;
+      const mensaje = document.getElementById('mensaje');
+
+      if (!usuario || !clave) {
+        mensaje.textContent = "⚠️ Por favor, completa todos los campos.";
+        return;
+      }
+
+      let texto = "";
+      if (rol === "admin") {
+        texto = `Bienvenido Administrador ${usuario}. Tienes acceso completo.`;
+      } else {
+        texto = `Hola Operador ${usuario}. Tienes acceso limitado a funciones operativas.`;
+      }
+
+      mensaje.textContent = texto;
+    }
+  </script>
+</body>
+</html>
