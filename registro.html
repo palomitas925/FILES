@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>SLIM POP Logo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, white 50%, #00aaff 50%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 5rem;
+      font-weight: bold;
+    }
+
+    .slim {
+      color: black;
+      margin-right: 20px;
+    }
+
+    .pop {
+      color: #00aaff;
+      display: flex;
+      align-items: center;
+    }
+
+    .smiley {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 50%;
+      background: #00aaff;
+      color: white;
+      font-size: 0.6em;
+      text-align: center;
+      line-height: 1em;
+      margin: 0 5px;
+      position: relative;
+    }
+
+    .smiley::before {
+      content: "☺";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .trademark {
+      font-size: 1rem;
+      vertical-align: super;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <div class="slim">SLIM</div>
+    <div class="pop">P<span class="smiley"></span>P<span class="trademark">®</span></div>
+  </div>
+
+  <script>
+
+    document.querySelector('.smiley').addEventListener('mouseenter', () => {
+      document.querySelector('.smiley').style.background = '#0077cc';
+    });
+
+    document.querySelector('.smiley').addEventListener('mouseleave', () => {
+      document.querySelector('.smiley').style.background = '#00aaff';
+    });
+  </script>
+</body>
+</html>
