@@ -1,0 +1,43 @@
+create table usuarios (
+    	no_colaborador varchar(15) PRIMARY KEY not null,
+    	nombre_colaborador varchar(30),
+    	rol_colaborador varchar(30),
+    	contraseña varchar(30));
+
+create table productos (
+    	codigo_barras INT PRIMARY KEY not null,
+    	descripcion varchar(45) UNIQUE,
+    	imagen varchar(255));
+
+create table registros_escaneos (
+    	id_escaneado INT not null PRIMARY KEY,
+	lote_escaneado int not null,
+    	fecha_escaneo date,
+    	hora_escaneo time,
+    	codigo_barras_producto int not null,
+    	descripcion_producto varchar(255),
+    	estado_escaneo varchar(45),
+    
+CONSTRAINT fk_codigo_barras
+FOREIGN KEY (codigo_barras_producto)
+REFERENCES productos(codigo_barras),
+
+CONSTRAINT fk_descripcion
+FOREIGN KEY (descripcion_producto)
+REFERENCES productos(descripcion));
+
+create table inventarios (
+	id_inventario INT PRIMARY KEY, 
+	nombre_inventarios varchar(50));
+
+create table categoría (
+	id_categoria INT PRIMARY KEY,
+	id_inventario INT,
+	nombre_categoria VARCHAR(50));
+
+create table subcategoria (
+	id_subcategoria INT PRIMARY KEY,
+	id_categoria INT,
+	nombre_subcategoria VARCHAR(50));
+
+
