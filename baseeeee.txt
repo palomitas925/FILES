@@ -30,7 +30,7 @@ create table inventarios (
 	id_inventario INT PRIMARY KEY, 
 	nombre_inventarios varchar(50));
 
-create table categoría (
+create table categoria (
 	id_categoria INT PRIMARY KEY,
 	id_inventario INT,
 	nombre_categoria VARCHAR(50));
@@ -39,5 +39,12 @@ create table subcategoria (
 	id_subcategoria INT PRIMARY KEY,
 	id_categoria INT,
 	nombre_subcategoria VARCHAR(50));
+
+create table retiros (
+	codigo_retiro INT AUTO_INCREMENT PRIMARY KEY,
+	fecha DATE,
+	operación VARCHAR(30),
+	no_colaborador
+	
 
 
