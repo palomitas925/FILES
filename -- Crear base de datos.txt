@@ -1,0 +1,83 @@
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS sistema_inventario;
+USE sistema_inventario;
+
+-- Tabla de Inventarios
+CREATE TABLE inventarios (
+  id_inventario INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+-- Tabla de Categorías
+CREATE TABLE categorias (
+  id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  id_inventario INT NOT NULL,
+  FOREIGN KEY (id_inventario) REFERENCES inventarios(id_inventario)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Tabla de Subcategorías
+CREATE TABLE subcategorias (
+  id_subcategoria INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  id_categoria INT NOT NULL,
+  FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- Tabla de Productos
+CREATE TABLE productos (
+  id_producto INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  id_subcategoria INT NOT NULL,
+  FOREIGN KEY (id_subcategoria) REFERENCES subcategorias(id_subcategoria)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
+
+-- Insertar inventarios
+INSERT INTO inventarios (nombre) VALUES ('TI'), ('Mantenimiento');
+
+-- Insertar categorías
+INSERT INTO categorias (nombre, id_inventario) VALUES 
+  ('Activos TI', 1),
+  ('Suministros', 1),
+  ('Refacciones', 2);
+
+-- Insertar subcategorías
+INSERT INTO subcategorias (nombre, id_categoria) VALUES 
+  ('Equipos de red', 1),
+  ('Equipos de cómputo', 1),
+  ('Refacciones', 3);
+
+-- Insertar productos
+INSERT INTO productos (nombre, descripcion, id_subcategoria) VALUES 
+  ('Switch Cisco', 'Dispositivo de red para conexión LAN', 1),
+  ('Laptop Dell', 'Equipo portátil para oficina', 2),
+  ('Tornillo de repuesto', 'Pieza para impresora', 3);
+
+
+
+
+
+-------------------------------------------------------------------------------------
+
+
+
+
+
+
+Relación	Tipo	Explicación
+Inventarios → Categorías	1:N	Un inventario puede tener muchas categorías
+Categorías → Subcategorías	1:N	Una categoría puede tener muchas subcategorías
+Subcategorías → Productos	1:N	Una subcategoría puede tener muchos productos
+Productos → Retiros	1:N	Un producto puede tener muchos retiros registrados
