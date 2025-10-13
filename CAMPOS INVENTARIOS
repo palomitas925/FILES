@@ -21,21 +21,27 @@
   linea_equipo VARCHAR(50),
   departamento_equipo VARCHAR(50),
   nombre_posicion_equipo VARCHAR(100),
+  ubicacion
+  estado
   hostname_equipo VARCHAR(100),
   nombre_computadora_equipo VARCHAR(100),
   etiqueta_servicio_equipo VARCHAR(100),
   express_code_equipo VARCHAR(100),
   procesador_equipo VARCHAR(100),
   generacion_equipo VARCHAR(50),
+  nucleos
   memoria_equipo VARCHAR(50),
+  tipo_disco
   almacenamiento_equipo VARCHAR(50),
   sistema_operativo_equipo VARCHAR(100),
   cargador_equipo VARCHAR(50),
   IPv4_v6_equipo VARCHAR(50),
 
   -- Campos específicos de Cisco
-  equipo_cisco
-  marca_cisco VARCHAR(50),
-  modelo_cisco VARCHAR(50),
-  adicional_cisco TEXT,
-  observaciones_cisco TEXT
+  equipo_infraestructura
+  marca_infraestructura VARCHAR(50),
+  modelo_infraestructura VARCHAR(50),
+  IP_equipo_infraestructura
+  adicional_infraestructura TEXT,
+  observaciones_infraestructura TEXT
+  especificaciones_infraestructura
