@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Listado de Productos</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #18bdff;
+      color: #333;
+    }
+
+    header {
+      background: #fff;
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #0e96cc;
+    }
+
+    .logout-btn {
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    main {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .filter-group {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .search-container input {
+      padding: 10px 35px 10px 12px;
+      border: 2px solid #0e96cc;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 300px;
+    }
+
+    .search-container::before {
+      content: '🔍';
+      position: absolute;
+      right: 10px;
+      font-size: 18px;
+      color: #0e96cc;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .filter-buttons button {
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .btn-regresar {
+      background: #0e96cc;
+    }
+
+    .btn-reporte {
+      background: #078dfa;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #0e96cc;
+      color: #fff;
+    }
+
+    img.product-img {
+      width: 80px;
+      border-radius: 5px;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      margin: 2px;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .edit-btn {
+      background: #078dfa;
+    }
+
+    .delete-btn {
+      background: #ce1f1f;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 10% auto;
+      padding: 30px;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-content label {
+      font-weight: bold;
+      color: #0e96cc;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      padding: 10px;
+      border: 2px solid #0e96cc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .modal-content button {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #0e96cc;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-content button:hover {
+      background: #007bb5;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Rol: Administrador</h1>
+    <button class="logout-btn" onclick="window.location.href='logout.php'">Cerrar sesión</button>
+  </header>
+
+  <main>
+    <div class="filter-group">
+      <div class="search-container">
+        <input type="text" id="filtro" placeholder="Filtro de datos por descripción..." onkeyup="filtrarTabla()">
+      </div>
+      <div class="filter-buttons">
+        <button class="btn-regresar" onclick="window.location.href='MainAdmin.php'">Regresar</button>
+        <button class="btn-reporte" onclick="abrirModal()">Generar reporte</button>
+      </div>
+    </div>
+
+    <table id="tabla-productos">
+      <thead>
+        <tr>
+          <th>Código de barras</th>
+          <th>Descripción</th>
+          <th>Imagen</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tb-body">
+        <!-- Se rellenará por JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Modal Generar Reporte -->
+  <div class="modal" id="modal-reporte">
+    <div class="modal-content">
+      <label for="fecha-inicio">Fecha inicio:</label>
+      <input type="date" id="fecha-inicio">
+      <label for="fecha-final">Fecha final:</label>
+      <input type="date" id="fecha-final">
+      <label for="producto-select">Producto:</label>
+      <select id="producto-select">
+        <option value="Todos">Todos</option>
+      </select>
+      <label for="formato">Formato:</label>
+      <select id="formato">
+        <option value="PDF">PDF</option>
+        <option value="XLSX">XLSX</option>
+      </select>
+      <button onclick="generarReporte()">Generar</button>
+      <button onclick="document.getElementById('modal-reporte').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Modal Editar -->
+  <div class="modal" id="modal-editar">
+    <div class="modal-content">
+      <label for="edit-codigo">Código de barras:</label>
+      <input type="text" id="edit-codigo" readonly>
+      <label for="edit-descripcion">Descripción:</label>
+      <input type="text" id="edit-descripcion">
+      <label for="edit-imagen">Nueva imagen:</label>
+      <input type="file" id="edit-imagen" accept="image/*">
+      <button onclick="guardarEdicion()">Guardar cambios</button>
+      <button onclick="cerrarModalEdicion()">Cancelar</button>
+    </div>
+  </div>
+
+  <script>
+    const tbody = document.getElementById('tb-body');
+    const prodSelect = document.getElementById('producto-select');
+    const dateStart = document.getElementById('fecha-inicio');
+    const dateEnd = document.getElementById('fecha-final');
+    const formatoSel = document.getElementById('formato');
+    let filaEditando = null;
+
+    // Generar 20 registros de ejemplo con fechas
+    (function llenarTabla() {
+      const hoy = new Date();
+      for (let i = 1; i <= 20; i++) {
+        const fecha = new Date(hoy.getTime() - (i * 86400000)) // i días atrás
+          .toISOString().slice(0, 10);
+        const codigo = `10000000000${i}`;
+        const desc = `Producto ejemplo ${i}`;
+        // Imagen aleatoria de Unsplash
+        const imgUrl = `https://plus.unsplash.com/premium_photo-1711031505781-2a45c879ceac?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW0lQzMlQTFnZW5lcyUyMGltcHJlc2lvbmFudGVzfGVufDB8fDB8fHww&fm=jpg&q=60&w=3000=P${i}`;
+        tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${codigo}</td>
+          <td>${desc}</td>
+          <td><img src="${imgUrl}" class="product-img"></td>
+          <td>${fecha}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="abrirEditar(this)">Editar</button>
+            <button class="action-btn delete-btn" onclick="eliminarFila(this)">Eliminar</button>
+          </td>
+        </tr>
+      `);
+        // Agregar opción al select de productos
+        const opt = document.createElement('option');
+        opt.value = desc; opt.textContent = desc;
+        prodSelect.appendChild(opt);
+      }
+    })();
+
+    function filtrarTabla() {
+      const filtro = document.getElementById('filtro').value.toLowerCase();
+      document.querySelectorAll('#tb-body tr').forEach(tr => {
+        tr.style.display = tr.cells[1].textContent.toLowerCase().includes(filtro)
+          ? '' : 'none';
+      });
+    }
+
+    function abrirModal() {
+      dateStart.value = '';
+      dateEnd.value = '';
+      prodSelect.value = 'Todos';
+      formatoSel.value = 'PDF';
+      document.getElementById('modal-reporte').style.display = 'block';
+    }
+
+    function abrirEditar(btn) {
+      filaEditando = btn.closest('tr');
+      document.getElementById('edit-codigo').value = filaEditando.cells[0].textContent;
+      document.getElementById('edit-descripcion').value = filaEditando.cells[1].textContent;
+      document.getElementById('edit-imagen').value = '';
+      document.getElementById('modal-editar').style.display = 'block';
+    }
+
+    function guardarEdicion() {
+      if (!filaEditando) return;
+      filaEditando.cells[1].textContent = document.getElementById('edit-descripcion').value;
+      const fileInput = document.getElementById('edit-imagen');
+      if (fileInput.files.length) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          filaEditando.cells[2].innerHTML = `<img src="${e.target.result}" class="product-img">`;
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+      cerrarModalEdicion();
+    }
+
+    function cerrarModalEdicion() {
+      filaEditando = null;
+      document.getElementById('modal-editar').style.display = 'none';
+    }
+
+    function eliminarFila(btn) {
+      btn.closest('tr').remove();
+    }
+
+    // Genera PDF o XLSX filtrando por producto y rango de fechas,
+    // e imprime solo Código, Descripción e Imagen
+    function generarReporte() {
+      const selProd = prodSelect.value;
+      const start = dateStart.value;
+      const end = dateEnd.value;
+      const clone = document.getElementById('tabla-productos').cloneNode(true);
+
+      // Filtrar filas
+      Array.from(clone.tBodies[0].rows).forEach(row => {
+        const fecha = row.cells[3].textContent;
+        const desc = row.cells[1].textContent;
+        let ok = true;
+        if (selProd !== 'Todos' && desc !== selProd) ok = false;
+        if (start && fecha < start) ok = false;
+        if (end && fecha > end) ok = false;
+        if (!ok) row.remove();
+      });
+
+      // Eliminar columnas Fecha (3) y Acciones (4)
+      Array.from(clone.tHead.rows[0].cells)
+        .forEach((th, i) => { if (i > 2) th.remove(); });
+      Array.from(clone.tBodies[0].rows).forEach(row =>
+        [3, 2, 1, 0].forEach(i => { if (i > 2) row.deleteCell(2); })
+      );
+
+      if (formatoSel.value === 'PDF') {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text('Reporte de Productos', 14, 16);
+        doc.autoTable({ html: clone, startY: 20 });
+        doc.save('reporte_productos.pdf');
+      } else {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(clone);
+        XLSX.utils.book_append_sheet(wb, ws, 'Productos');
+        XLSX.writeFile(wb, 'reporte_productos.xlsx');
+      }
+
+      document.getElementById('modal-reporte').style.display = 'none';
+    }
+
+    // Cerrar modales al click fuera
+    window.onclick = function (event) {
+      const modalRep = document.getElementById('modal-reporte');
+      const modalEdt = document.getElementById('modal-editar');
+      if (event.target === modalRep) {
+        modalRep.style.display = 'none';
+      }
+      if (event.target === modalEdt) {
+        modalEdt.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+
+</html>

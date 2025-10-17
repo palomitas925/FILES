@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Código de Barras</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 40px;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 14px;
+      margin: 5px;
+    }
+    #print-area {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px dashed #aaa;
+      display: inline-block;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Generador de Código de Barras</h2>
+  <input type="text" id="codigo" placeholder="Código">
+  <button onclick="limpia()">Borrar</button>
+  <button onclick="generar()">Generar</button>
+  <button onclick="window.print()">Imprimir</button>
+  
+  <div id="print-area">
+    <svg id="barcode"></svg>
+  </div>
+
+  <script>
+    function generar() {
+      const valor = document.getElementById("codigo").value;
+      if (!valor.trim()) {
+        alert("Ingresa un código válido.");
+        return;
+      }
+      function limpia() {
+        document.getElementById("codigo").value = " ";
+      }
+      JsBarcode("#barcode", valor, {
+        format: "CODE128",
+        lineColor: "#000",
+        width: 2,
+        height: 80,
+        displayValue: true
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>POP CODE - Login</title>
+  <link rel="stylesheet" href="log_style.css">
+</head>
+
+<body>
+  <div class="login-wrapper">
+    <div class="login-container">
+      <img src="../imagenes/SLIMPOPs.png" alt="Logo SlimPop">
+      <h2 style="font-family: 'Helvetica', sans-serif; font-weight:bolder;">Iniciar Sesión</h2>
+      <input type="text" id="usuario" placeholder="Usuario">
+      <input type="password" id="contrasena" placeholder="Contraseña">
+      <button onclick="iniciarSesion()">Iniciar Sesión</button>
+    </div>
+
+    <div class="col-md-6 promo-section d-flex flex-column justify-content-center align-items-center">
+      <h1 style="text-align: center; color: #17a6df;font-family: 'Quicksand', sans-serif;">SISTEMA DE INVENTARIOS Y LECTOR DE CÓDIGOS</h1>
+      <div class="carousel">
+        <img src="../imagenes/BIENVENIDO.png" class="carousel-img" alt="Slide 0" style="display: block;">
+        <img src="../imagenes/chiles.png" class="carousel-img" alt="Slide 1" style="display: none;">
+        <img src="../imagenes/limon.png" class="carousel-img" alt="Slide 2" style="display: none;">
+        <img src="../imagenes/mar.png" class="carousel-img" alt="Slide 2" style="display: none;">
+        <img src="../imagenes/Sweet.png" class="carousel-img" alt="Slide 2" style="display: none;">
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <p id="modal-text">Validando credenciales...</p>
+      </div>
+    </div>
+
+    <script>
+      let currentSlide = 0;
+      const slides = document.querySelectorAll(".carousel-img");
+      setInterval(() => {
+        slides.forEach((img, i) => img.style.display = i === currentSlide ? "block" : "none");
+        currentSlide = (currentSlide + 1) % slides.length;
+      }, 5000);
+
+      function iniciarSesion() {
+        const usuario = document.getElementById('usuario').value.trim();
+        const contrasena = document.getElementById('contrasena').value.trim();
+        const modal = document.getElementById('modal');
+        const modalText = document.getElementById('modal-text');
+
+        if (!usuario || !contrasena) {
+          alert("Por favor, completa todos los campos.");
+          return;
+        }
+
+        modal.style.display = "flex";
+        modalText.innerText = "Validando credenciales...";
+
+        fetch("validar_usuario.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ usuario, contrasena })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.exito) {
+              const rol = data.rol_colaborador;
+              const area = data.area;
+              modalText.innerText = "Acceso concedido. Redirigiendo...";
+
+              setTimeout(() => {
+                if (rol === "Administrador") {
+                  window.location.href = "MainAdmin.php";
+                } else if (rol === "Supervisor") {
+                  window.location.href = `MainSuper${area}.html`;
+                } else if (rol === "Operador") {
+                  window.location.href = "MainOp.html";
+                } else {
+                  modalText.innerText = "Rol no reconocido.";
+                }
+              }, 1500);
+            } else {
+              modalText.innerText = data.error || "Credenciales incorrectas.";
+              setTimeout(() => modal.style.display = "none", 2000);
+            }
+          })
+          .catch(err => {
+            modalText.innerText = "Error de conexión.";
+            console.error(err);
+            setTimeout(() => modal.style.display = "none", 2000);
+          });
+      }
+    </script>
+  </div>
+</body>
+
+</html>
