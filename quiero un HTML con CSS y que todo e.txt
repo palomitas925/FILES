@@ -1,0 +1,28 @@
+quiero un HTML con CSS y que todo este integrado en uno solo con un  diseño blanco para decir que usuario inicio sesión, y el botón de cerrar sesión con azul en el HTML le colocas los siguientes campos que te describo a continuación y funcionando de esa manera en la que se indica:
+19.	Frontend para la ventana de usuarios registrados del administrador
+Figura 21
+La interfaz gráfica muestra los registros de los usuarios existentes.
+Componentes de la ventana
+	Combo box “Usuarios a mostrar”: Selección de los tipos de usuarios que se desean mostrar.
+	Campo de texto “Buscar”: Campo para realizar consultas de usuarios que están registrados.
+	Campo de texto “Numero de colaborador”: Ingreso del número de colaborador.
+	Campo de texto “Nombre”: Campo para ingresar el nombre del colaborador.
+	Campo de texto “Rol”: Ingreso del rol que tiene el colaborador.
+	Campo de texto “Área”: Ingreso del área a la que pertenece el colaborador.
+	Campo de texto “Contraseña”: Ingreso de la contraseña del colaborador.
+	Botón “Registrar”: Botón para registrar usuarios.
+	Botón “Regresar”: Botón para regresar al panel anterior. 
+	Tabla “Usuarios Registrados”: Tabla donde se visualizan los usuarios que se encuentran registrados.
+	ComboBox “Todos los usuarios”: Se muestran los usuarios que están registrados en el sistema.
+	Campo de texto “Buscar”: Permite filtrar el número del colaborador para facilitar su búsqueda.
+	Botón “Editar”: Permite modificar o actualizar el campo de algún usuario.
+	Botón “inhabilitar”: Solo permite que el usuario ya no sea visible y no este disponible para hacer escaneos.
+
+una ventana donde en la parte de arriba salga que usuario esta e la ventana que en este caso es la de administrador y con su nombre que se haya registrado según la base de datos, posteriormente en la parte de abajo que este la tabla con los registros de los usuarios con sus campos de, numero del colaborador, nombre, rol, área, contraseña, y finamente lp os botones de editar al usuario y de inhabilitar o deshabilitar conteniendo asi en la parte de arriba de la tabla aparezca un combo box con la lista de nombres de los usuarios registrados asi como un campo de texto que busque a través de su nombre y numero del colaborador, en la parte derecha de la ventana que este un formulario que permita registrar un nuevo usuario y lo agre a la tabla, sobre el formulario que ete un icono donde muestre la cantidad de usuarios registrados, esta es mi base de datos.CREATE TABLE usuarios (
+  no_colaborador VARCHAR(15) PRIMARY KEY,
+  nombre_colaborador VARCHAR(50),
+  rol_colaborador VARCHAR(15),
+  area VARCHAR(50),
+  contrasena VARCHAR(15),
+  fecha DATE);
+ 
